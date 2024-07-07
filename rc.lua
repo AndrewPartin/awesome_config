@@ -460,11 +460,11 @@ end)
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
 	-- titlebars only for floating windows
-	if c.floating or c.first_tag.layout.name == "floating" then
-		awful.titlebar.show(c)
-	else
-		awful.titlebar.hide(c)
-	end
+	-- if c.floating or c.first_tag.layout.name == "floating" then
+	-- 	awful.titlebar.show(c)
+	-- else
+	-- 	awful.titlebar.hide(c)
+	-- end
 
 	-- buttons for the titlebar
 	local buttons = mytable.join(
@@ -523,24 +523,24 @@ client.connect_signal("property::maximized", function (c)
 end)
 
 -- Connect to property::floating signal
-client.connect_signal("property::floating", function(c)
-    if c.floating then
-        awful.titlebar.show(c)
-    else
-        awful.titlebar.hide(c)
-    end
-end)
+-- client.connect_signal("property::floating", function(c)
+--     if c.floating then
+--         awful.titlebar.show(c)
+--     else
+--         awful.titlebar.hide(c)
+--     end
+-- end)
 
 -- Connect to tag::layout signal
-tag.connect_signal("property::layout", function(t)
-    for _, c in ipairs(t:clients()) do
-        if t.layout.name == "floating" then
-            awful.titlebar.show(c)
-        else
-            awful.titlebar.hide(c)
-        end
-    end
-end)
+-- tag.connect_signal("property::layout", function(t)
+--     for _, c in ipairs(t:clients()) do
+--         if t.layout.name == "floating" then
+--             awful.titlebar.show(c)
+--         else
+--             awful.titlebar.hide(c)
+--         end
+--     end
+-- end)
 
 -- switch to parent after closing child window
 local function backham()
