@@ -127,6 +127,17 @@ local memory = lain.widget.mem({
 	end
 })
 
+-- Brightness
+local brightness = awful.widget.watch(
+    'brightnessctl g -d "intel_backlight"',
+    2,
+    function(widget, stdout)
+        local brightness = tonumber(stdout)
+        local brightness_percentage = math.floor(brightness / 19393 * 100)
+        widget:set_markup(markup.fontfg(theme.font, "#f5e0dc", "󰃞 " .. brightness_percentage .. "% "))
+    end
+)
+
 -- Seperators
 local bspace20 = wibox.widget.textbox()
 bspace20.forced_width = dpi(20)
@@ -147,7 +158,7 @@ function theme.at_screen_connect(s)
 
 	-- Tags
 	awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
-	
+
 	-- Create a promptbox for each screen
 	s.mypromptbox = awful.widget.prompt()
 	-- Create an imagebox widget which will contains an icon indicating which layout we're using.
@@ -159,13 +170,13 @@ function theme.at_screen_connect(s)
                 awful.button({}, 3, function () awful.layout.inc(-1) end),
                 awful.button({}, 4, function () awful.layout.inc( 1) end),
                 awful.button({}, 5, function () awful.layout.inc(-1) end)))
-	
+
 	-- Create a taglist widget
 	s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
-	
+
 	-- Create a tasklist widget
 	s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
-	
+
 	-- Create the wibox
 	s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(30), bg = theme.bg_normal, fg = theme.fg_normal })
 
@@ -184,6 +195,8 @@ function theme.at_screen_connect(s)
 			nil,
 			{ -- Right widgets
 				layout = wibox.layout.fixed.horizontal,
+				brightness,
+				bspace10,
 				theme.volume.widget,
 				bspace10,
 				memory.widget,
