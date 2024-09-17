@@ -9,46 +9,36 @@ local math = math
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
-local theme                                     = {}
-theme.confdir                                   = os.getenv("HOME") .. "/.config/awesome/themes/blarvis"
-theme.wallpaper                                 = theme.confdir .. "/wall.png"
-theme.font                                      = "BigBlueTermPlus Nerd Font 14"
-theme.menu_bg_normal                            = "#11111b" -- crust
-theme.menu_bg_focus                             = "#11111b"
-theme.bg_normal                                 = "#000000" -- "#181825"
-theme.bg_focus                                  = "#11111b"
-theme.bg_urgent                                 = "#11111b"
-theme.fg_normal                                 = "#6c7086" -- overlay0
-theme.fg_focus                                  = "#f38ba8" -- red 
-theme.fg_urgent                                 = "#f38ba8" -- red
-theme.fg_minimize                               = "#f5e0dc" -- rosewater
-theme.border_width                              = dpi(1)
-theme.border_normal                             = "#313244" -- surface0
-theme.border_focus                              = "#f38ba8" -- red
-theme.border_marked                             = "#89b4fa" -- blue
-theme.menu_border_width                         = 0
-theme.menu_width                                = dpi(130)
-theme.menu_fg_normal                            = "#aaaaaa"
-theme.menu_fg_focus                             = "#ff8c00"
-theme.menu_bg_normal                            = "#050505dd"
-theme.menu_bg_focus                             = "#050505dd"
+local theme			= {}
+theme.confdir			= os.getenv("HOME") .. "/.config/awesome/themes/blarvis"
+theme.wallpaper			= theme.confdir .. "/wall.png"
+theme.font			= "BigBlueTermPlus Nerd Font 14"
+theme.bg_normal			= "#000000"
+theme.bg_focus			= "#11111b"
+theme.bg_urgent			= "#11111b"
+theme.fg_normal			= "#6c7086" -- overlay0
+theme.fg_focus			= "#f38ba8" -- red 
+theme.fg_urgent			= "#f38ba8" -- red
+theme.fg_minimize		= "#f5e0dc" -- rosewater
+theme.border_width		= dpi(1)
+theme.border_normal		= "#313244" -- surface0
+theme.border_focus		= "#f38ba8" -- red
+theme.border_marked		= "#89b4fa" -- blue
+theme.taglist_squares_sel	= theme_assets.taglist_squares_sel(5, "#f38ba8")
+theme.taglist_squares_unsel	= theme_assets.taglist_squares_sel(4, "#6c7086")
 
-theme.taglist_squares_sel = theme_assets.taglist_squares_sel(5, "#f38ba8")
-theme.taglist_squares_unsel = theme_assets.taglist_squares_sel(4, "#6c7086")
+theme.tasklist_plain_task_name  = true
+theme.tasklist_disable_icon     = true
+theme.useless_gap               = dpi(5)
 
-theme.tasklist_plain_task_name                  = true
-theme.tasklist_disable_icon                     = true
-theme.useless_gap                               = dpi(8)
-
-theme.layout_tile                               = theme.confdir .. "/icons/tile.png"
-theme.layout_floating                           = theme.confdir .. "/icons/floating.png"
-theme.layout_max				= theme.confdir .. "/icons/max.png"
+theme.layout_tile		= theme.confdir .. "/icons/tile.png"
+theme.layout_floating           = theme.confdir .. "/icons/floating.png"
+theme.layout_max		= theme.confdir .. "/icons/max.png"
 
 local markup = lain.util.markup
 
 -- Textclock
 os.setlocale(os.getenv("LANG")) -- to localize the clock
-local clockicon = wibox.widget.imagebox(theme.widget_clock)
 local mytextclock = wibox.widget.textclock(markup("#89b4fa", "%A %d %B ") .. markup("#a6e3a1", "-") .. markup("#fab387", " %H:%M "))
 mytextclock.font = theme.font
 
@@ -93,8 +83,10 @@ theme.volume = lain.widget.alsa({
 	settings = function()
 		if volume_now.status == "off" then
 			volume_now.level = "󰖁 " .. volume_now.level
+			os.execute('brightnessctl --device=\'platform::mute\' s 1')
 		else
 			volume_now.level = "󰕾 " .. volume_now.level
+			os.execute('brightnessctl --device=\'platform::mute\' s 0')
 		end
 
 		widget:set_markup(markup.fontfg(theme.font, "#89b4fa", volume_now.level .. "% "))
@@ -127,15 +119,7 @@ local bspace10 = wibox.widget.textbox()
 bspace10.forced_width = dpi(10)
 
 function theme.at_screen_connect(s)
-	-- Quake application
-	s.quake = lain.util.quake({ app = awful.util.terminal })
-	
-	-- If wallpaper is a function, call it with the screen
-	local wallpaper = theme.wallpaper
-	if type(wallpaper) == "function" then
-		wallpaper = wallpaper(s)
-	end
-	gears.wallpaper.maximized(wallpaper, s, true)
+	gears.wallpaper.maximized(theme.wallpaper, s, true)
 
 	-- Tags
 	awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
